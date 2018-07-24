@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />    
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-resource.min.js"></script>
+    <script type="text/javascript" src="javascripts/core.js"></script>
+  </head>
+  <body ng-app="myApp">
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+
+    <div ng-controller="myController">
+      <h3>modbus address 1-20 data is</h3>
+      <li ng-repeat="data in datas">({{data.index}}) hex:{{data.data_hex}} dec:{{data.data_dec}}</li>
+
+      <div ng-repeat-start="data in datas">({{data.index}})</div> 
+      <div>hex:{{data.data_hex}}</div>
+      <div ng-repeat-end="data in datas">dec:{{data.data_dec}}</div>
+
+    </div>
+  </body>
+</html>
