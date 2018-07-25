@@ -2,23 +2,38 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-resource.min.js"></script>
     <script type="text/javascript" src="javascripts/core.js"></script>
   </head>
   <body ng-app="myApp">
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-
+    <h3><%= title %></h3>
     <div ng-controller="myController">
-      <h3>modbus address 1-20 data is</h3>
+      <h5>modbus address 1-20 data is</h5>
+      <!--
       <li ng-repeat="data in datas">({{data.index}}) hex:{{data.data_hex}} dec:{{data.data_dec}}</li>
-
-      <div ng-repeat-start="data in datas">({{data.index}})</div> 
-      <div>hex:{{data.data_hex}}</div>
-      <div ng-repeat-end="data in datas">dec:{{data.data_dec}}</div>
-
+      -->
+      <table class="table table-sm">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">modify</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="data in datas">
+            <!-- <th scope="row">1</th> -->
+            <th scope="row">{{data.index+1}}</th>
+            <td>{{data.data_hex}}</td>
+            <td>{{data.data_dec}}</td>
+            <td><input type="number" ng-model="$parent.writedata[$index]" /></td>
+          </tr>          
+        </tbody>
+      </table>
+      <button class="btn btn-primary" ng-click="save()">Save</button>
     </div>
   </body>
 </html>

@@ -35,10 +35,7 @@ router.post('/', function(req, res, next) {
     //讀取modbus資訊 ex: {"method":"read", "slaveid":2, "addr":"2-5"}
     m.doRead(slaveid, addrBegin, addrEnd).then((data)=>{
       console.log('doRead(resolve)');
-      console.log(data);
-
       buffer = Buffer.from(data, 'utf8');
-      console.log(buffer);
       //index 9之後為data 
       var dataIndex = 0;
       var aData = [];   
@@ -58,6 +55,8 @@ router.post('/', function(req, res, next) {
 
       res.json(aData);
 
+      m.client.destroy();
+      console.log('===========================');
     },(err)=>{
       console.log('doRead(reject)');
       console.log(err);
@@ -67,6 +66,9 @@ router.post('/', function(req, res, next) {
       response.err = err;
 
       res.json(response);
+
+      m.client.destroy();
+      console.log('---------------------');
     });
 
   } else if (method=='write') {
@@ -78,14 +80,14 @@ router.post('/', function(req, res, next) {
       var response = {};
       response.result = true;
       res.json(response);
-
+      m.client.destroy();
     },(err)=>{
 
       var response = {};
       response.result = false;
       response.err = err;
       res.json(response);
-
+      m.client.destroy();
     })
   }
 

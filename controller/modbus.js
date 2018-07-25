@@ -73,6 +73,7 @@ exports = module.exports = class modbus {
 
             this.client.on('end', function () {
                 console.log("end");
+                reject('socket is end');
             });
 
         });        
@@ -103,7 +104,7 @@ exports = module.exports = class modbus {
         }
         return new Promise(function (resolve) {
             this.client.once('data', resolve);
-            this.client.write(bf);
+            this.client.write(bf);        
         }.bind(this));
     }
 
