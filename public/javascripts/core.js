@@ -27,6 +27,11 @@
     function doRead(){
       $http.post('/api', {method:"read", slaveid:2, addr:"0-19"})
       .success(function (data) {   
+
+          if (data.result!=undefined && data.result==false) {            
+            return
+          }
+
           $scope.writedata=[];
           for (var i=0; i<data.length; i++) {
             $scope.writedata.push(data[i].data_dec);
@@ -76,8 +81,14 @@
       var promise = new Promise((resolve)=>{
         doWrite(sData.substring(1), iAddrindex.toString(10));
         resolve();
-      }).then(doRead());   
+      }).then(setTimeout(() => {
+        doRead()
+      }, 500));   
     };
+
+    $scope.reload = function() {
+      doRead();
+    }
 
     //$scope.frameworks = ['Node.js', 'Express', 'AnjularJS'];
   };

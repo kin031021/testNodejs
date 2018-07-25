@@ -2,7 +2,8 @@ var express = require('express');
 var q = require('q');
 var router = express.Router();
 
-var modbus = require('../controller/modbus');    
+var modbus = require('../controller/modbus');
+var m = new modbus();
 
 /* post api 讀取或寫入modbus資訊 */
 router.post('/', function(req, res, next) {
@@ -28,13 +29,13 @@ router.post('/', function(req, res, next) {
 
   var addrBegin = Number(addr.split("-")[0]);
   var addrEnd   = Number(addr.split("-")[1]);   
-  var m = new modbus();
+  
   
   if (method=='read') {
   
     //讀取modbus資訊 ex: {"method":"read", "slaveid":2, "addr":"2-5"}
     m.doRead(slaveid, addrBegin, addrEnd).then((data)=>{
-      console.log('doRead(resolve)');
+      console.log('doRead(result)');
       buffer = Buffer.from(data, 'utf8');
       //index 9之後為data 
       var dataIndex = 0;
@@ -54,9 +55,6 @@ router.post('/', function(req, res, next) {
       }
 
       res.json(aData);
-
-      m.client.destroy();
-      console.log('===========================');
     },(err)=>{
       console.log('doRead(reject)');
       console.log(err);
@@ -66,9 +64,6 @@ router.post('/', function(req, res, next) {
       response.err = err;
 
       res.json(response);
-
-      m.client.destroy();
-      console.log('---------------------');
     });
 
   } else if (method=='write') {
@@ -76,18 +71,17 @@ router.post('/', function(req, res, next) {
     //寫入modbus資訊 ex: {"method":"write", "addr":"2-4", "data":"15-16", "slaveid":2}
     var Arrdata = writedata.split('-');
     m.doWrite(slaveid, addrBegin, addrEnd, Arrdata).then((data)=>{
-
+      console.log('doWrite(result)');
       var response = {};
       response.result = true;
       res.json(response);
-      m.client.destroy();
     },(err)=>{
-
+      console.log('doWrite(reject)');
+      console.log(err);
       var response = {};
       response.result = false;
       response.err = err;
       res.json(response);
-      m.client.destroy();
     })
   }
 

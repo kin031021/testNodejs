@@ -46,35 +46,43 @@ exports = module.exports = class modbus {
     doConnect() {
         return new Promise((resolve, reject)=>{
 
-            this.client.connect(this.port, this.ip, function(){
-                console.log("connected");
-                this.status = "connect";
+            if (this.status!="connect") {
+                
+                this.client.connect(this.port, this.ip, function(){
+                    console.log("connected");
+                    this.status = "connect";
+                    resolve();
+                }.bind(this));
+
+                this.client.on('close', function () {
+                    console.log("close");
+                    this.status = "close";
+                    reject('socket is closed');
+                    // if(this.client!=null){
+                    //     this.client.setTimeout(10000,function(){
+                    //         console.log("retry");
+                    //         this.client.connect(this.port,this.ip,function(){
+                    //             console.log("reconnect");
+                    //         });
+                    //     }.bind(this));
+                    // }
+                }.bind(this));
+    
+                this.client.on('error', function (err) {
+                    console.log(err);
+                    this.status = "error";
+                    reject(err);
+                }.bind(this));
+    
+                this.client.on('end', function () {
+                    console.log("end");
+                    reject('socket is end');
+                });
+
+            } else {
+                console.log("this.client.connecting=true");
                 resolve();
-            }.bind(this));
-
-            this.client.on('close', function () {
-                console.log("close");
-                this.status = "close";
-                // if(this.client!=null){
-                //     this.client.setTimeout(10000,function(){
-                //         console.log("retry");
-                //         this.client.connect(this.port,this.ip,function(){
-                //             console.log("reconnect");
-                //         });
-                //     }.bind(this));
-                // }
-            }.bind(this));
-
-            this.client.on('error', function (err) {
-                console.log(err);
-                this.status = "error";
-                reject(err);
-            }.bind(this));
-
-            this.client.on('end', function () {
-                console.log("end");
-                reject('socket is end');
-            });
+            }           
 
         });        
     }
